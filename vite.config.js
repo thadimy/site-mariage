@@ -26,11 +26,11 @@ const MIME = {
 
 export default defineConfig(({ command }) => ({
   root: '.',
-  // GitHub Pages (page projet) sert le site sous /<nom-du-repo>/.
-  // En build on préfixe donc par /site-mariage/ ; en dev on garde / (le
-  // middleware ci-dessous attend les URLs sous /programme).
-  // Domaine personnalisé ou repo <user>.github.io ? Mettre VITE_BASE=/ au build.
-  base: command === 'build' ? (process.env.VITE_BASE || '/site-mariage/') : '/',
+  // Par défaut le site est servi à la RACINE ('/') : c'est ce qu'attendent
+  // Netlify, `npm run preview`, et le dev — donc prod === dev.
+  // GitHub Pages en page projet (servie sous /<repo>/) ? Builder avec
+  // VITE_BASE=/site-mariage/ (le workflow .github/workflows/deploy.yml le fait).
+  base: command === 'build' ? (process.env.VITE_BASE || '/') : '/',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
