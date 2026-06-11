@@ -1,7 +1,7 @@
 # Thalie & Dimitry — Faire-part de Mariage
 
-Site de faire-part digital pour le mariage de **Thalie ADONG** et **Dimitry MAKOBA**  
-**Samedi 29 août 2026** · Lille (Mairie + Église le Phare) · belvédèree, Belgique
+Site de faire-part digital pour le mariage de **Thalie ADONG** et **Dimitry MAKOBA**
+**Samedi 29 août 2026** · Lille (Mairie + Église le Phare) · Belvédère, Belgique
 
 ---
 
@@ -12,10 +12,11 @@ Site de faire-part digital pour le mariage de **Thalie ADONG** et **Dimitry MAKO
 3. [Installation et lancement](#installation-et-lancement)
 4. [Architecture du projet](#architecture-du-projet)
 5. [Système de design](#système-de-design)
-6. [Déploiement Netlify](#déploiement-netlify)
-7. [Maintenance — contenu blog](#maintenance--contenu-blog)
-8. [Règles de développement](#règles-de-développement)
-9. [Contacts](#contacts)
+6. [Déploiement GitHub Pages](#déploiement-github-pages)
+7. [Formulaire RSVP (important)](#formulaire-rsvp-important)
+8. [Maintenance — contenu blog](#maintenance--contenu-blog)
+9. [Règles de développement](#règles-de-développement)
+10. [Contacts](#contacts)
 
 ---
 
@@ -25,16 +26,17 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 
 | Partie | URL | Rôle |
 |--------|-----|------|
-| **Landing animée** | `/` | Entrée immersive — vidéo, grille de photos avec animations GSAP, scroll fluide Lenis, CTA vers le programme |
-| **Site programme** | `/programme/` | Site d'information complet — couple, histoire, cérémonie, compte à rebours, RSVP, blog |
+| **Landing animée** | `/` | Entrée immersive — vidéo plein écran avec verset biblique, grille de photos animée (GSAP), scroll fluide (Lenis), CTA vers le programme |
+| **Site programme** | `/programme/` | Site d'information complet — couple, histoire, cérémonie, compte à rebours dynamique, RSVP, blog |
 
 **Parcours visiteur :**
 ```
 / (landing animée)
-  → scroll + animations GSAP
+  → vidéo + verset « L'amour est patient… » + incitation à scroller
+  → scroll + animations GSAP (grille de photos)
   → CTA "Programme du mariage"
   → /programme/ (site complet)
-      → navigation : Couple · Histoire · Cérémonie · RSVP · Blog
+      → navigation : Couple · Infos · Histoire · Cérémonie · RSVP · Blog
 ```
 
 ---
@@ -57,7 +59,16 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 | `css/thalie-dimitry.webflow.css` | Design system du site (variables, composants) |
 | `js/webflow.js` | Interactions Webflow (sliders, navbar, animations) — **ne jamais modifier** |
 | jQuery 3.5.1 (CDN) | Requis par webflow.js |
-| Netlify Forms | Réception des formulaires RSVP (sans backend) |
+| Compte à rebours | Script inline vanilla dans `programme/index.html` (jours + heures, accord singulier/pluriel) |
+
+### Hébergement
+| Outil | Rôle |
+|-------|------|
+| **GitHub Pages** | Hébergement statique du site (via GitHub Actions) |
+| [Formspree](https://formspree.io) *(à configurer)* | Réception des RSVP — voir [section dédiée](#formulaire-rsvp-important) |
+
+> ⚠️ GitHub Pages est un hébergement **100 % statique** : pas de backend, pas de Netlify Forms.
+> La réception des RSVP nécessite un service tiers (voir [Formulaire RSVP](#formulaire-rsvp-important)).
 
 ---
 
@@ -71,8 +82,8 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 
 ```bash
 # Cloner le repo
-git clone <url-du-repo>
-cd thalie-dimitry-mariage
+git clone https://github.com/thadimy/site-mariage.git
+cd site-mariage
 
 # Installer les dépendances (une seule fois)
 npm install
@@ -88,15 +99,16 @@ Le site est accessible sur :
 | `http://localhost:5173/` | Landing animée |
 | `http://localhost:5173/programme/` | Site programme complet |
 | `http://localhost:5173/programme/blog/` | Blog / Journal |
-| `http://localhost:5173/programme/blog/comment-nous-sommes-rencontres.html` | Article 1 |
+| `http://localhost:5173/programme/blog/comment-nous-sommes-rencontres.html` | Exemple d'article |
 
-> **Note :** En développement, le dossier `programme/` est servi directement par Vite comme fichiers statiques. Les liens relatifs Webflow fonctionnent tels quels.
+> **Note :** En développement, le `base` Vite vaut `/` et le dossier `programme/` est servi
+> directement comme fichiers statiques. Les liens relatifs Webflow fonctionnent tels quels.
 
 ### Autres commandes
 
 ```bash
-npm run build      # Build de production → génère dist/
-npm run preview    # Prévisualiser le build localement (http://localhost:4173/)
+npm run build      # Build de production → génère dist/ (base /site-mariage/)
+npm run preview    # Prévisualiser le build (http://localhost:4173/site-mariage/)
 ```
 
 ---
@@ -104,15 +116,18 @@ npm run preview    # Prévisualiser le build localement (http://localhost:4173/)
 ## Architecture du projet
 
 ```
-thalie-dimitry-mariage/
+site-mariage/
 │
 ├── index.html              ← Entry point Vite — landing animée
-├── vite.config.js          ← Config Vite (root='.', publicDir='public', copie statique de programme/)
+├── vite.config.js          ← Config Vite (base, publicDir, copie statique de programme/)
 ├── package.json
-├── netlify.toml            ← Config build + redirects Netlify
-├── .gitignore
 ├── README.md
-├── CLAUDE.md               ← Instructions pour Claude Code (règles visuelles, architecture)
+├── CLAUDE.md               ← Instructions internes (non versionné)
+├── netlify.toml            ← Config Netlify (legacy — ignorée par GitHub Pages)
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml      ← CI/CD : build + déploiement GitHub Pages
 │
 ├── src/                    ← Sources de la landing (traitées par Vite)
 │   ├── scripts/
@@ -120,30 +135,29 @@ thalie-dimitry-mariage/
 │   │   └── utils.js        ← preloadImages()
 │   └── styles/
 │       ├── base.css        ← Design tokens landing (--color-*, --font-*, tailles en rem)
-│       └── index.css       ← Mise en page landing (block--intro, block--main, gallery)
+│       └── index.css       ← Mise en page landing (block--intro, verset, block--main, gallery)
 │
 ├── public/                 ← Assets statiques landing (copiés tel quel par Vite)
-│   ├── video.mp4           ← Vidéo portrait section intro
-│   ├── edited-1.png        ← Photo droite section intro
-│   ├── new-young*.jpeg     ← Photos grille animée (colonnes 1-2)
-│   ├── young-*.jpeg        ← Photos grille animée (colonne 3)
-│   ├── d.png               ← Photo grille (12e item)
+│   ├── video.mp4           ← Vidéo plein écran section intro
+│   ├── fleur-vanille.png   ← Fleur décorative (compteur programme)
+│   ├── new-young*.jpeg     ← Photos grille animée
+│   ├── young-*.jpeg        ← Photos grille animée
 │   ├── *.webp              ← Variantes WebP
 │   ├── favicon.png
-│   └── _redirects          ← Règles de routage Netlify (fallback)
+│   └── _redirects          ← Règles Netlify (legacy — ignorées par GitHub Pages)
 │
 └── programme/              ← Site Webflow (copié tel quel dans dist/ via viteStaticCopy)
-    ├── index.html          ← Page principale (7 sections)
+    ├── index.html          ← Page principale (couple, infos, histoire, cérémonie, compte à rebours, RSVP)
     ├── merci.html          ← Confirmation post-RSVP
-    ├── blog.html           ← Shell CMS original (non utilisé en navigation)
-    ├── detail_blog.html    ← Shell CMS original (non utilisé en navigation)
     ├── 401.html / 404.html
-    ├── blog/               ← Blog statique reconstruit
-    │   ├── index.html                              ← Liste des 4 articles
+    ├── blog/               ← Blog statique (6 articles + index)
+    │   ├── index.html                              ← Liste des articles (Journal)
     │   ├── comment-nous-sommes-rencontres.html
     │   ├── nos-photos-de-fiancailles.html
     │   ├── notre-date-et-lieu.html
-    │   └── notre-theme-et-couleurs.html
+    │   ├── notre-theme-et-couleurs.html
+    │   ├── adresses-hotels-le-jour-j.html          ← Hôtels & accès le Jour-J
+    │   └── nos-photos-du-mariage.html              ← Album photo (après le mariage)
     ├── admin-page/
     │   ├── styleguide.html     ← Référence des composants HTML (boutons, cartes, nav)
     │   ├── change-log.html
@@ -154,7 +168,7 @@ thalie-dimitry-mariage/
     │   └── thalie-dimitry.webflow.css  ← Source de vérité : variables CSS + toutes les classes
     ├── js/
     │   └── webflow.js          ← ⛔ NE JAMAIS MODIFIER
-    └── images/                 ← 131 assets (JPEG, PNG, SVG, WebP, AVIF)
+    └── images/                 ← Assets du site programme (JPEG, PNG, SVG, WebP, AVIF)
 ```
 
 ### Comment Vite gère les deux parties
@@ -163,17 +177,37 @@ thalie-dimitry-mariage/
 vite build
   ├── traite index.html (racine)
   │     └── bundle src/scripts/index.js + src/styles/*.css → dist/assets/
+  │         (préfixés par le base /site-mariage/)
   ├── copie public/ → dist/ (assets landing)
   └── viteStaticCopy : copie programme/ → dist/programme/ (aucune transformation)
 ```
 
-Le dossier `programme/` est volontairement **non traité** par Vite : ses chemins relatifs (`css/`, `js/`, `images/`) doivent rester intacts pour que `webflow.js` fonctionne.
+Le dossier `programme/` est volontairement **non traité** par Vite : ses chemins relatifs
+(`css/`, `js/`, `images/`) doivent rester intacts pour que `webflow.js` fonctionne.
+
+### À propos du `base` Vite
+
+GitHub Pages sert une **page projet** sous un sous-chemin : `https://thadimy.github.io/site-mariage/`.
+Le `base` est donc défini dans `vite.config.js` :
+
+```js
+base: command === 'build' ? (process.env.VITE_BASE || '/site-mariage/') : '/'
+```
+
+- **En dev** → `base: '/'` (le middleware qui sert `programme/` attend les URLs sous `/programme`).
+- **En build** → `base: '/site-mariage/'` : Vite préfixe les assets bundlés.
+- Tous les liens de contenu (vers `programme/`, le favicon, etc.) sont **relatifs**, donc
+  ils fonctionnent quel que soit le `base`.
+
+> **Domaine personnalisé** ou repo renommé en `<user>.github.io` (site servi à la racine) ?
+> Builder avec `VITE_BASE=/` (voir le workflow). Aucun autre changement nécessaire.
 
 ---
 
 ## Système de design
 
-Les deux parties du site partagent la même identité visuelle mais utilisent des conventions de nommage différentes.
+Les deux parties du site partagent la même identité visuelle mais utilisent des conventions
+de nommage différentes.
 
 ### Palette de couleurs
 
@@ -188,11 +222,13 @@ Les deux parties du site partagent la même identité visuelle mais utilisent de
 
 ### Typographie
 
-| Police | Usage | Variable |
-|--------|-------|----------|
-| **Gilda Display** (serif) | Titres, headings | `--_typography---heading-font` |
-| **Inter Tight** (sans-serif) | Corps de texte, UI | `--_typography---body-font` |
-| **Allura** (cursive) | Accents décoratifs | `--_typography---heading-font-two` |
+| Police | Usage |
+|--------|-------|
+| **Gilda Display** (serif) | Titres, headings, verset, compte à rebours |
+| **Inter Tight** (sans-serif) | Corps de texte, UI |
+| **Allura** (cursive) | Accents décoratifs |
+
+> Ne jamais importer d'autre police. Ces trois polices sont chargées via Google Fonts.
 
 ### Composants réutilisables (programme/)
 
@@ -225,32 +261,43 @@ Avant de créer un nouveau composant HTML dans `programme/`, toujours vérifier 
 
 ---
 
-## Déploiement Netlify
+## Déploiement GitHub Pages
 
-### Premier déploiement
+Le déploiement est **automatisé** via GitHub Actions : chaque `push` sur `main` build le site
+et le publie sur GitHub Pages. Aucune commande manuelle, aucun dossier `dist` à committer.
 
-1. Pousser ce repo sur GitHub
-2. [Netlify](https://app.netlify.com) → "Add new site" → "Import an existing project"
-3. Sélectionner le repo GitHub
-4. Netlify détecte automatiquement `netlify.toml` :
-   - **Build command :** `npm run build`
-   - **Publish directory :** `dist`
-5. Cliquer **Deploy site**
+### Configuration initiale (une seule fois)
 
-### Domaine personnalisé
+1. **Pousser le code** sur GitHub (le repo `thadimy/site-mariage` existe déjà) :
+   ```bash
+   git add .
+   git commit -m "Déploiement GitHub Pages"
+   git push origin main
+   ```
 
-Dashboard Netlify → **Domain settings** → **Add custom domain**  
-→ Configurer les DNS chez votre registrar (Netlify fournit les valeurs)  
-→ SSL Let's Encrypt activé automatiquement (gratuit)
+2. Sur GitHub : **Settings → Pages → Build and deployment**
+   - **Source** : sélectionner **GitHub Actions**
 
-### Activer les notifications RSVP (obligatoire après 1er déploiement)
+3. C'est tout. Le workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) se déclenche
+   automatiquement et déploie le site.
 
-Dashboard → **Forms** → `rsvp-mariage` → **Form notifications** → **Add notification** → Email  
-→ Destinataire : `thaliedimitry@gmail.com`
+4. Le site est en ligne sur :
+   **https://thadimy.github.io/site-mariage/**
+
+### Ce que fait le workflow
+
+```
+push sur main
+  → checkout du code
+  → npm ci (install)
+  → npm run build (génère dist/ avec base /site-mariage/)
+  → upload de dist/ comme artefact Pages
+  → déploiement sur GitHub Pages
+```
 
 ### Redéploiement
 
-Chaque `git push` sur la branche principale déclenche un rebuild automatique.
+Chaque modification suit le même flux :
 
 ```bash
 git add .
@@ -258,48 +305,94 @@ git commit -m "description des changements"
 git push
 ```
 
+Le suivi du déploiement se fait dans l'onglet **Actions** du repo. Un déploiement manuel est
+aussi possible via **Actions → Déploiement GitHub Pages → Run workflow**.
+
+### Domaine personnalisé (optionnel)
+
+1. **Settings → Pages → Custom domain** → saisir le domaine (ex. `thalie-et-dimitry.fr`)
+2. Configurer les DNS chez le registrar (GitHub fournit les enregistrements)
+3. Cocher **Enforce HTTPS** (certificat automatique)
+4. Le site étant alors servi à la **racine** du domaine, builder avec `base: /` :
+   éditer le workflow et décommenter `env: VITE_BASE: /` à l'étape *Build de production*.
+
+### Page 404 (optionnel)
+
+GitHub Pages sert automatiquement un fichier `404.html` placé à la racine du build pour les
+URLs inconnues. Pour une page d'erreur personnalisée, ajouter `public/404.html`
+(il sera copié à la racine de `dist/`).
+
+> **Note :** les fichiers `netlify.toml` et `public/_redirects` sont conservés pour permettre
+> un hébergement alternatif sur Netlify, mais sont **ignorés par GitHub Pages**.
+
+---
+
+## Formulaire RSVP (important)
+
+⚠️ **À lire avant la mise en ligne.**
+
+Le formulaire RSVP de `programme/index.html` a été conçu pour **Netlify Forms**
+(`data-netlify="true"`). **Ce mécanisme ne fonctionne pas sur GitHub Pages** : l'hébergement
+est statique, sans backend pour recevoir les soumissions. En l'état, **les RSVP envoyés depuis
+GitHub Pages sont perdus**.
+
+### Solution : brancher un service de formulaire statique
+
+Le plus simple est [**Formspree**](https://formspree.io) (offre gratuite suffisante) :
+
+1. Créer un compte sur formspree.io, créer un formulaire → récupérer l'endpoint, ex.
+   `https://formspree.io/f/abcdwxyz`.
+
+2. Dans `programme/index.html`, modifier la balise `<form>` :
+
+   **Avant :**
+   ```html
+   <form id="email-form" name="rsvp-mariage" data-netlify="true"
+         data-netlify-honeypot="bot-field" method="POST" action="merci.html" class="cta-form">
+   ```
+
+   **Après :**
+   ```html
+   <form id="email-form" name="rsvp-mariage" method="POST"
+         action="https://formspree.io/f/abcdwxyz" class="cta-form">
+     <!-- Redirection vers la page de remerciement après envoi -->
+     <input type="hidden" name="_next"
+            value="https://thadimy.github.io/site-mariage/programme/merci.html">
+   ```
+   (retirer les attributs `data-netlify*` et l'input caché `form-name`).
+
+3. La première soumission demande une confirmation par email à l'adresse du compte Formspree.
+   Les RSVP suivants arrivent directement par email.
+
+> Alternatives équivalentes : [Getform](https://getform.io), [Basin](https://usebasin.com),
+> ou un simple [Google Forms](https://forms.google.com) intégré.
+
 ---
 
 ## Maintenance — contenu blog
 
-Les articles du blog contiennent des marqueurs à remplacer avec le vrai contenu :
-
-```bash
-# Trouver tous les points d'injection
-grep -r "<!-- CONTENU :" programme/blog/
-```
-
-### Injecter le contenu d'un article
-
-Ouvrir le fichier correspondant dans `programme/blog/` et remplacer chaque `<!-- CONTENU : ... -->` :
-
-| Marqueur | À remplacer par |
-|----------|----------------|
-| `<!-- CONTENU : titre article N -->` | Le titre complet de l'article |
-| `<!-- CONTENU : date article N -->` | Ex : `15 juin 2026` |
-| `<!-- CONTENU : catégorie article N -->` | Ex : `Notre Histoire` |
-| `<!-- CONTENU : extrait article N -->` | 2-3 lignes de résumé |
-| `<!-- CONTENU : corps de l'article N -->` | HTML riche (paragraphes, `<strong>`, `<em>`…) |
-| `<!-- CONTENU : citation article N -->` | Une citation marquante |
-| `<!-- CONTENU : auteur citation N -->` | Prénom de l'auteur |
-| `<!-- CONTENU : alt image ... -->` | Texte alternatif pour l'accessibilité |
+Le blog contient **6 articles** dans `programme/blog/`, chacun relié à la page d'accueil
+(section *Infos*) et à la liste `programme/blog/index.html`.
 
 ### Remplacer une image placeholder
 
-Les articles utilisent des images existantes du site en guise de placeholder. Pour les remplacer :
+Certains articles utilisent des images existantes du site en placeholder. Pour les remplacer :
 
 1. Déposer la nouvelle image dans `programme/images/`
-2. Mettre à jour le `src` dans le fichier de l'article :
+2. Mettre à jour le `src` dans le fichier de l'article (chemin `../images/...` depuis `blog/`) :
    ```html
    <img src="../images/ma-nouvelle-photo.jpg" ...>
    ```
 3. Faire de même dans `programme/blog/index.html` pour la vignette de liste
 
-### Ajouter un 5e article
+### Ajouter un nouvel article
 
 1. Créer `programme/blog/mon-nouvel-article.html` en copiant la structure d'un article existant
+   (header, image principale, `blog-details-contant`, citation, articles connexes, footer)
 2. Ajouter une entrée dans `programme/blog/index.html` (copier un bloc `.blog-collection-item-wrap`)
-3. Alterner les layouts : `.blog-collection-item-wrap` et `.blog-collection-item-wrap _02`
+3. Alterner les layouts : `.blog-collection-item-wrap` (image à gauche) et
+   `.blog-collection-item-wrap _02` (image à droite)
+4. Mettre à jour la section « Continuer la lecture » des articles voisins si pertinent
 
 ---
 
@@ -316,15 +409,24 @@ Les articles utilisent des images existantes du site en guise de placeholder. Po
 3. Utiliser les classes existantes, ne pas en créer de nouvelles pour des patterns existants
 
 ### Avant d'écrire du code dans la landing (src/)
-1. Lire `src/styles/base.css` → tokens de design (couleurs, typographie, espacements)
+1. Lire `src/styles/base.css` → tokens de design (couleurs, typographie, espacements en rem)
 2. Lire `src/styles/index.css` → mise en page existante
 
 ### Conventions
-- **Images programme** : toujours référencées en `images/[fichier]` depuis les pages dans `programme/`
+- **Images programme** : référencées en `images/[fichier]` depuis les pages de `programme/`
 - **Images programme dans blog/** : chemin `../images/[fichier]`
-- **Assets landing** : toujours référencés en `./[fichier]` depuis `index.html`
+- **Assets landing** : référencés en **relatif** (`favicon.png`, `programme/`, `./photo.jpg`)
+  pour rester compatibles avec le `base` GitHub Pages
 - **Typo Webflow** : `blog-details-contant` (sans "e") — ne pas corriger, la classe CSS l'utilise
-- **Chemins absolus** : utiliser `/programme/` pour les liens depuis la landing vers le site
+- **Guillemets** : si VS Code convertit automatiquement les guillemets droits (`"`) en
+  guillemets typographiques (`"`) dans le HTML, les attributs cassent. Désactiver toute
+  extension « smart quotes » / l'option d'auto-formatage des guillemets.
+
+### Checklist avant commit
+- [ ] Couleurs et polices conformes au système de design
+- [ ] Classes CSS existantes réutilisées (pas de nouvelles classes pour des patterns existants)
+- [ ] Aucun guillemet typographique dans les attributs HTML
+- [ ] `npm run build` passe sans erreur
 
 ---
 
@@ -333,7 +435,7 @@ Les articles utilisent des images existantes du site en guise de placeholder. Po
 | | |
 |--|--|
 | Email | thaliedimitry@gmail.com |
-| Téléphone | Audrey : +33 7 84 67 51 79 
-Anouchka : +33 7 78 66 00 92 |
+| Téléphone | Audrey : +33 7 84 67 51 79 — Anouchka : +33 7 78 66 00 92 |
 | Date du mariage | Samedi 29 août 2026 |
 | Date limite RSVP | 30 juillet 2026 |
+| Site en ligne | https://thadimy.github.io/site-mariage/ |
