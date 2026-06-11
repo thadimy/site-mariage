@@ -1,0 +1,319 @@
+html {
+    font-size: calc(100vw / 1440);
+}
+
+body {
+    background-color: var(--color-body-bg);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: var(--p1-size);
+    font-weight: var(--p1-weight);
+    letter-spacing: var(--p1-letter-spacing);
+    line-height: var(--p1-line-height);
+}
+
+/* ---------------- Block intro ---------------- */
+
+.block--intro {
+    position: relative;
+    z-index: 1;
+}
+
+.media {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    padding: 0 24rem;
+}
+
+.media__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: lightgray;
+}
+
+.media__caption {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 221rem;
+    font-size: 14rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* ---------------- Block main ---------------- */
+
+.block.block--main {
+    height: 425vh;
+}
+
+.block__wrapper {
+    position: sticky;
+    top: 0;
+    padding: 0 24rem;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    z-index: 1;
+}
+
+.content__title {
+    width: 924rem;
+    font-family: var(--font-heading);
+    font-size: 104rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-navy-kelp);
+}
+
+.content__title.animation-complete {
+    opacity: 1 !important;
+}
+
+.content__description {
+    width: 455rem;
+    margin-top: 24rem;
+    font-size: 14rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+.content__button {
+    margin-top: 22rem;
+    margin-bottom: 12rem;
+    font-size: 17rem;
+    background: transparent;
+    border: none;
+    padding: 0.5em 1em;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    position: relative;
+    transition: 0.5s ease;
+    cursor: pointer;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background-color: var(--color-accent);
+        transition: 0.5s ease;
+    }
+
+    &:hover {
+        color: #FFFFFF;
+        transition-delay: 0.5s;
+        text-decoration: none;
+    }
+
+    &:hover::before {
+        width: 100%;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 0;
+        width: 100%;
+        background-color: var(--color-accent);
+        transition: 0.4s ease;
+        z-index: -1;
+    }
+
+    &:hover::after {
+        height: 100%;
+        transition-delay: 0.4s;
+        color: aliceblue;
+    }
+}
+
+/* ---------------- Gallery ---------------- */
+
+.gallery {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    width: 736rem;
+}
+
+.gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 32rem;
+    row-gap: 40rem;
+    will-change: transform;
+}
+
+.gallery__item {
+    width: 100%;
+    aspect-ratio: 1;
+    will-change: transform;
+}
+
+.gallery__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: lightgray;
+}
+
+/* ─── Intro — vidéo plein écran ──────────────────────── */
+
+.intro__split {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.intro__video-panel {
+  position: absolute;
+  inset: 0;
+}
+
+/* Fullscreen video */
+.intro__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Dark overlay */
+.intro__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(10, 22, 34, 0.88);
+  pointer-events: none;
+}
+
+/* Scroll hint at bottom center */
+.media__caption {
+  position: absolute;
+  bottom: 36rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12rem;
+  line-height: 1.3;
+  color: rgba(221, 234, 244, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 3.5rem;
+  white-space: nowrap;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Verset biblique centré au milieu du panel vidéo */
+.intro__verse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 900rem;
+  max-width: 90%;
+  text-align: center;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.intro__verse-text {
+  font-family: var(--font-heading);
+  font-size: 72rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.intro__verse-ref {
+  display: block;
+  margin-top: 24rem;
+  font-family: var(--font-body);
+  font-size: 14rem;
+  letter-spacing: 3.2rem;
+  text-transform: uppercase;
+  font-style: normal;
+  opacity: 0.85;
+}
+
+/* Incitation à scroller, toujours visible, tout en bas */
+.intro__scroll {
+  position: absolute;
+  bottom: 36rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rem;
+  color: rgba(221, 234, 244, 0.75);
+  pointer-events: none;
+}
+
+.intro__scroll-text {
+  font-size: 12rem;
+  letter-spacing: 3.5rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.intro__scroll-arrow {
+  width: 16rem;
+  height: 16rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: introScrollBounce 1.6s ease-in-out infinite;
+}
+
+@keyframes introScrollBounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.5; }
+  50%      { transform: rotate(45deg) translate(5rem, 5rem); opacity: 1; }
+}
+
+/* ─── Cursor image trail ────────────────────────────── */
+
+.cursor-trail-img {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  object-fit: cover;
+  border-radius: 2px;
+  will-change: transform, opacity;
+  transform-origin: center center;
+  height: auto;
+}
+
+@media (max-width: 991px) {
+  .cursor-trail-img { display: none !important; }
+}
+
