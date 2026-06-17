@@ -317,3 +317,28 @@ body {
   .cursor-trail-img { display: none !important; }
 }
 
+/* Tablette + téléphone : taille FIXE et lisible pour le texte d'intro et le
+   bouton. On abandonne l'échelle fluide (calc(100vw/1440)) qui les rendait
+   minuscules, au profit d'un clamp() avec plancher en px (garanti lisible). */
+@media (max-width: 991px) {
+  .content__description {
+    width: 88%;
+    max-width: 560px;
+    margin-top: 22px;          /* respiration sous le titre */
+    font-size: clamp(13px, 3.2vw, 19px);
+    line-height: 1.5;
+  }
+
+  .content__button {
+    margin-top: 18px;          /* respiration au-dessus du bouton */
+    font-size: clamp(12px, 3vw, 18px);
+  }
+
+  /* Plus d'espace entre les photos : quand la grille s'ouvre au scroll,
+     le vide central est plus grand → le texte respire au milieu. */
+  .gallery__grid {
+    column-gap: 6vw;
+    row-gap: 7vw;
+  }
+}
+

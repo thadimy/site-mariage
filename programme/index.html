@@ -1055,14 +1055,14 @@
                     </div>
                     <div class="cta-form-wrap-two w-form">
                       <form id="email-form" name="rsvp-mariage" data-netlify="true" data-netlify-honeypot="bot-field"
-                        method="POST" action="merci.html" class="cta-form">
+                        method="POST" action="/programme/merci.html" class="cta-form">
                         <p style="display:none"><label>Ne pas remplir : <input name="bot-field"></label></p>
                         <input type="hidden" name="form-name" value="rsvp-mariage">
                         <div class="input-wrap"><input class="cta-form-input three w-input" maxlength="256"
-                            name="Nom-et-pr-nom" placeholder="Nom et prénom *" type="text" id="Nom-et-pr-nom"
+                            name="Nom-et-prenom" placeholder="Nom et prénom *" type="text" id="Nom-et-pr-nom"
                             required=""><input class="cta-form-input three w-input" maxlength="256" name="Adresse-Email"
                             placeholder="Adresse Email *" type="email" id="Adresse-Email" required=""></div><select
-                          id="S-lectionner" name="S-lectionner" required="" class="cta-form-input three w-select">
+                          id="S-lectionner" name="Nombre-invites" required="" class="cta-form-input three w-select">
                           <option value="">Nombre d&#x27;invité(es) *</option>
                           <option value="Moi uniquement">Moi uniquement</option>
                           <option value="2 invités">2 invités</option>
@@ -1341,6 +1341,37 @@
       setTimeout(function () {
         if (getComputedStyle(el).opacity === '0') el.style.opacity = '1';
       }, 2000);
+    })();
+  </script>
+  <script>
+    /* RSVP -> Netlify Forms : court-circuite la soumission Webflow (qui poste
+       vers l API Webflow) et envoie les donnees a Netlify en AJAX. */
+    (function () {
+      var form = document.getElementById('email-form');
+      if (!form) return;
+
+      // Capture sur document : s execute AVANT le handler Webflow et le bloque.
+      document.addEventListener('submit', function (e) {
+        if (e.target !== form) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Honeypot anti-spam : si rempli, c est un bot -> on ignore.
+        var pot = form.querySelector('[name="bot-field"]');
+        if (pot && pot.value) return;
+
+        var body = new URLSearchParams(new FormData(form)).toString();
+
+        fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body
+        })
+        .then(function () { window.location.href = '/programme/merci.html'; })
+        .catch(function () {
+          alert("Une erreur reseau est survenue. Merci de reessayer ou de nous contacter.");
+        });
+      }, true);
     })();
   </script>
 </body>
