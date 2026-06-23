@@ -256,6 +256,46 @@ class StickyGridScroll {
             // Toggle content visibility based on scroll direction
             // Overlap with previous animation by 0.32 seconds
             .add(() => this.toggleContent(timeline.scrollTrigger.direction === 1), "-=0.32")
+
+        // On small screens only (≤ 990px), apply specific translations to certain images
+        // to clear the centred text more effectively
+        if (window.innerWidth <= 990) {
+            // young-3-bis.jpeg (column 0, index 1) → translate(0%, -90%)
+            if (this.columns[0] && this.columns[0][1]) {
+                timeline.to(this.columns[0][1], {
+                    yPercent: -90,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                })
+            }
+
+            // new-young-2.jpeg (column 1, index 0) → translate(0%, -100%)
+            if (this.columns[1] && this.columns[1][0]) {
+                timeline.to(this.columns[1][0], {
+                    yPercent: -100,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                })
+            }
+
+            // young-11.jpeg (column 1, index 2) → translate(0%, 100%)
+            if (this.columns[1] && this.columns[1][2]) {
+                timeline.to(this.columns[1][2], {
+                    yPercent: 100,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                })
+            }
+
+            // young-14.jpeg (column 1, index 3) → translate(0%, 100%)
+            if (this.columns[1] && this.columns[1][3]) {
+                timeline.to(this.columns[1][3], {
+                    yPercent: 100,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                })
+            }
+        }
     }
 }
 

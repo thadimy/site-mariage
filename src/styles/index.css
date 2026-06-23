@@ -340,5 +340,18 @@ body {
     column-gap: 6vw;
     row-gap: 7vw;
   }
+
+  /* Verset biblique : l'échelle fluide (rem = vw/1440) le rendait minuscule
+     sur téléphone. On repasse sur un clamp() avec plancher en px lisible. */
+  .intro__verse-text {
+    font-size: clamp(26px, 7vw, 48px);
+    line-height: 1.25;
+  }
+
+  .intro__verse-ref {
+    margin-top: 16px;
+    font-size: clamp(12px, 3.2vw, 16px);
+    letter-spacing: 2px;
+  }
 }
 

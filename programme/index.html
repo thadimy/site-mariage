@@ -442,7 +442,7 @@
                   <a href="#Infos" class="menu w-nav-link">Infos</a>
                   <a href="#Histoire" class="menu w-nav-link">Histoire</a>
                   <a href="#Ceremony" class="menu w-nav-link">CÉRÉMONIE</a>
-                  <a href="#rsvp-2" class="menu w-nav-link">RSVP</a>
+                  <a href="rsvp.html" class="menu w-nav-link">RSVP</a>
                   <a href="blog/" class="menu w-nav-link">Blog</a>
                 </div>
               </nav>
@@ -477,7 +477,7 @@
                   <div class="_22-june">29 AOÛT</div>
                   <p class="hero-item-left-text">2026</p>
                 </div>
-                <a data-w-id="07b29a91-7165-dfb1-ea4b-86c291a88d82" href="#rsvp-2"
+                <a data-w-id="07b29a91-7165-dfb1-ea4b-86c291a88d82" href="rsvp.html"
                   class="hero-link-wrap-02 w-inline-block">
                   <div class="hero-link-text">CONFIRMER </div><img src="images/btn-bg.avif" loading="lazy" alt="btn-bg"
                     class="btn-bg">
@@ -1275,7 +1275,7 @@
                 loading="lazy" class="testimonial-img-four"></div>
             <div class="footer-item">
               <div class="footer-btn">
-                <a data-w-id="0d00955e-876f-6ff9-240e-4b560f4117d6" href="#rsvp-2"
+                <a data-w-id="0d00955e-876f-6ff9-240e-4b560f4117d6" href="rsvp.html"
                   class="hero-link-wrap-02 w-inline-block">
                   <div class="hero-link-text _02">CONFIRMER</div><img loading="lazy" src="images/btn-bg-2.svg"
                     alt="btn-bg-2" class="btn-bg">
@@ -1360,7 +1360,16 @@
         var pot = form.querySelector('[name="bot-field"]');
         if (pot && pot.value) return;
 
-        var body = new URLSearchParams(new FormData(form)).toString();
+        var fd = new FormData(form);
+
+        // Memoriser les reponses pour le recapitulatif de la page merci
+        try {
+          var obj = {};
+          fd.forEach(function (v, k) { if (k !== 'bot-field' && k !== 'form-name') obj[k] = v; });
+          sessionStorage.setItem('rsvpData', JSON.stringify(obj));
+        } catch (err) {}
+
+        var body = new URLSearchParams(fd).toString();
 
         fetch('/', {
           method: 'POST',

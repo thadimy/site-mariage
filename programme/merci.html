@@ -20,37 +20,226 @@
   <link href="images/favicon-dark.png" rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
   <link href="images/favicon-48.png" rel="icon" type="image/png" sizes="48x48">
   <link href="images/webclip-180.png" rel="apple-touch-icon" sizes="180x180">
-  <link href="images/webclip-192.png" rel="icon" type="image/png" sizes="192x192">
-  <link href="images/webclip.png" rel="icon" type="image/png" sizes="512x512">
   <style>
-    .merci-section {
-      min-height: 60vh;
+    /* ===== Page de confirmation — texte principal, carrousel d'accompagnement ===== */
+    .merci-main {
+      padding: clamp(48px, 8vw, 112px) 22px;
+      background-color: var(--_colors---body-bg, #e8f0f6);
+    }
+
+    .merci-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: clamp(40px, 6vw, 84px);
+      align-items: center;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    /* ---------- Colonne texte (élément principal) ---------- */
+    .merci-mark { width: 46px; height: auto; margin-bottom: 22px; }
+
+    .merci-eyebrow {
+      font-family: 'Inter Tight', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 14px;
+      color: var(--_colors---accent-color, #db570f);
+      margin-bottom: 18px;
+    }
+
+    .merci-left h1 {
+      font-family: 'Gilda Display', serif;
+      font-size: clamp(2.8rem, 5.5vw, 4.6rem);
+      line-height: 1.02;
+      color: var(--_colors---theme-primary-color, #0d2a3d);
+      margin: 0 0 24px;
+    }
+
+    .merci-intro {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+      line-height: 1.62;
+      color: var(--_colors---navy-kelp, #174664);
+      max-width: 52ch;
+      margin: 0 0 46px;
+    }
+
+    /* ---------- Récapitulatif (aéré, lisible) ---------- */
+    .merci-recap { margin: 0 0 46px; }
+
+    .merci-recap-title {
+      font-family: 'Inter Tight', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 13px;
+      color: var(--_colors---theme-secondary, #2e7aad);
+      margin-bottom: 6px;
+    }
+
+    .merci-recap dl { margin: 0; }
+
+    .merci-row {
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(13, 42, 61, 0.12);
+    }
+
+    .merci-row dt {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6e8fa8;
+      margin-bottom: 7px;
+    }
+
+    .merci-row dd {
+      margin: 0;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: clamp(1.12rem, 1.7vw, 1.42rem);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--_colors---theme-primary-color, #0d2a3d);
+    }
+
+    /* ---------- Bouton retour (bien visible) ---------- */
+    .merci-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 17px 34px;
+      background-color: var(--_colors---theme-primary-color, #0d2a3d);
+      color: #fff;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      box-shadow: 0 10px 24px rgba(13, 42, 61, 0.2);
+      transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .merci-back:hover {
+      background-color: var(--_colors---accent-color, #db570f);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(219, 87, 15, 0.32);
+    }
+
+    .merci-back .arrow { font-size: 19px; line-height: 1; }
+
+    /* ---------- Carrousel (accompagnement) ---------- */
+    .rsvp-carousel { width: 100%; max-width: 440px; margin-left: auto; }
+
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(13, 42, 61, 0.25);
+      background-color: #d4e2ee;
+    }
+
+    .carousel-track { position: absolute; inset: 0; }
+
+    .carousel-track img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+    }
+
+    .carousel-track img.is-active { opacity: 1; }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 42px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px 20px;
-      background: var(--_colors---body-bg, #e8f0f6);
-    }
-
-    .merci-wrap {
-      text-align: center;
-      max-width: 600px;
-    }
-
-    .merci-wrap h1 {
-      font-family: var(--_typography---heading-font, "Gilda Display", serif);
-      font-size: clamp(2rem, 5vw, 4rem);
+      border: none;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.82);
       color: var(--_colors---theme-primary-color, #0d2a3d);
-      margin-bottom: 24px;
-      line-height: 1.1;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 14px rgba(13, 42, 61, 0.18);
+      transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
-    .merci-wrap p {
-      font-family: var(--_typography---body-font, "Inter Tight", sans-serif);
-      font-size: 1.1rem;
-      color: var(--_colors---theme-primary-color, #0d2a3d);
-      margin-bottom: 40px;
-      line-height: 1.6;
+    .carousel-arrow:hover { background-color: #fff; transform: translateY(-50%) scale(1.08); }
+    .carousel-arrow.prev { left: 12px; }
+    .carousel-arrow.next { right: 12px; }
+
+    /* Barre de progression — élément dédié, sous l'image */
+    .carousel-progress {
+      height: 3px;
+      margin: 16px 0;
+      border-radius: 99px;
+      background-color: rgba(13, 42, 61, 0.12);
+      overflow: hidden;
+    }
+
+    .carousel-bar {
+      display: block;
+      height: 100%;
+      width: 0;
+      background-color: var(--_colors---theme-primary-color, #0d2a3d);
+      border-radius: 99px;
+    }
+
+    /* Miniatures — fenêtre centrée (active ± 3) */
+    .carousel-thumbs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .carousel-thumb {
+      flex: 0 0 auto;
+      width: 52px;
+      height: 52px;
+      padding: 0;
+      border: 2px solid transparent;
+      border-radius: 11px;
+      overflow: hidden;
+      cursor: pointer;
+      background: none;
+      opacity: 0.5;
+      transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .carousel-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .carousel-thumb.is-active {
+      opacity: 1;
+      border-color: var(--_colors---theme-primary-color, #0d2a3d);
+      transform: scale(1.08);
+    }
+
+    /* ---------- Responsive : message en haut, images en bas ---------- */
+    @media screen and (max-width: 1023px) {
+      .merci-grid { grid-template-columns: 1fr; gap: clamp(36px, 7vw, 56px); }
+      .rsvp-carousel { max-width: 440px; margin: 0 auto; }
+    }
+
+    @media screen and (max-width: 560px) {
+      .carousel-stage { aspect-ratio: 3 / 4; }
+      .carousel-arrow { width: 38px; height: 38px; font-size: 20px; }
+      .carousel-thumb { width: 46px; height: 46px; }
     }
   </style>
 </head>
@@ -74,7 +263,7 @@
                   <a href="index.html#Infos" class="menu w-nav-link">Infos</a>
                   <a href="index.html#Histoire" class="menu w-nav-link">Histoire</a>
                   <a href="index.html#Ceremony" class="menu w-nav-link">CÉRÉMONIE</a>
-                  <a href="index.html#rsvp-2" class="menu w-nav-link">RSVP</a>
+                  <a href="rsvp.html" class="menu w-nav-link">RSVP</a>
                   <a href="blog/" class="menu w-nav-link">Blog</a>
                 </div>
               </nav>
@@ -87,18 +276,34 @@
       </div>
     </section>
 
-    <section class="merci-section">
-      <div class="merci-wrap">
-        <div class="success-message-2 _02 w-form-done" style="display:block">
-          <div class="thank-you _02">Nous sommes heureux de vous compter parmi nos invités.</div>
+    <section class="merci-main">
+      <div class="merci-grid">
+        <div class="merci-left">
+          <img src="images/sa.svg" alt="" class="merci-mark">
+          <div class="merci-eyebrow">Présence confirmée</div>
+          <h1 id="merci-title">Merci !</h1>
+          <p class="merci-intro">Votre réponse a bien été enregistrée. Nous avons hâte de célébrer ce grand jour avec
+            vous le <strong>29 août 2026</strong>.</p>
+
+          <div class="merci-recap" id="merci-recap" hidden>
+            <div class="merci-recap-title">Votre récapitulatif</div>
+            <dl id="merci-recap-list"></dl>
+          </div>
+
+          <a href="index.html" class="merci-back"><span class="arrow">←</span> Retour à l'accueil</a>
         </div>
-        <h1>Merci !</h1>
-        <p>Votre présence a bien été confirmée. Nous avons hâte de célébrer ce grand jour avec vous le <strong>29 août
-            2026</strong>.</p>
-        <a href="index.html" class="hero-link-wrap-02 w-inline-block" style="display:inline-flex">
-          <div class="hero-link-text _02">← Retour à l'invitation</div><img loading="lazy" src="images/btn-bg-2.svg"
-            alt="btn-bg-2" class="btn-bg">
-        </a>
+
+        <div class="merci-right">
+          <div class="rsvp-carousel" id="rsvp-carousel">
+            <div class="carousel-stage">
+              <div class="carousel-track" id="carousel-track"></div>
+              <button class="carousel-arrow prev" id="carousel-prev" aria-label="Image précédente">&#8249;</button>
+              <button class="carousel-arrow next" id="carousel-next" aria-label="Image suivante">&#8250;</button>
+            </div>
+            <div class="carousel-progress"><span class="carousel-bar" id="carousel-bar"></span></div>
+            <div class="carousel-thumbs" id="carousel-thumbs"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -135,10 +340,178 @@
       </div>
     </section>
   </div>
+
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69cee7bab1e4b33dca2719b3"
     type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
     crossorigin="anonymous"></script>
   <script src="js/webflow.js" type="text/javascript"></script>
+
+  <script>
+    /* ============================ CARROUSEL ============================ */
+    (function () {
+      /* ┌──────────────────────────────────────────────────────────────┐
+         │  MODIFIE ICI les photos du diaporama.                         │
+         │  Chemins depuis la RACINE du site (images du dossier public/).│
+         │  Ajoute / retire / réordonne librement les lignes.            │
+         └──────────────────────────────────────────────────────────────┘ */
+      var CAROUSEL_IMAGES = [
+        { src: '/new-young.jpeg',   alt: 'Thalie & Dimitry' },
+        { src: '/new-young-2.jpeg', alt: 'Thalie & Dimitry' },
+        { src: '/new-young-4.jpeg', alt: 'Thalie & Dimitry' },
+        { src: '/new-young-5.jpeg', alt: 'Thalie & Dimitry' },
+        { src: '/young-3-bis.jpeg', alt: 'Thalie & Dimitry' },
+        { src: '/young-9.jpeg',     alt: 'Thalie & Dimitry' },
+        { src: '/young-10.jpeg',    alt: 'Thalie & Dimitry' },
+        { src: '/young-11.jpeg',    alt: 'Thalie & Dimitry' },
+        { src: '/young-12.jpeg',    alt: 'Thalie & Dimitry' },
+        { src: '/young-13.jpeg',    alt: 'Thalie & Dimitry' },
+        { src: '/young-14.jpeg',    alt: 'Thalie & Dimitry' }
+      ];
+      var DURATION = 5000; // durée d'affichage de chaque photo en millisecondes
+      /* ───────────────────────── fin de la zone à modifier ───────────────────────── */
+
+      var track    = document.getElementById('carousel-track');
+      var thumbs   = document.getElementById('carousel-thumbs');
+      var bar      = document.getElementById('carousel-bar');
+      var carousel = document.getElementById('rsvp-carousel');
+      if (!track || !CAROUSEL_IMAGES.length) return;
+
+      var N = CAROUSEL_IMAGES.length;
+      var slides = [];
+      var current = 0;
+      var elapsed = 0;
+      var lastTs = null;
+      var hovering = false;
+
+      // Images principales (empilées, crossfade)
+      CAROUSEL_IMAGES.forEach(function (im, i) {
+        var img = document.createElement('img');
+        img.src = im.src;
+        img.alt = im.alt || '';
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        track.appendChild(img);
+        slides.push(img);
+      });
+
+      // Nombre de miniatures de chaque côté, calculé sur la largeur RÉELLE du
+      // carrousel (et non de l'écran) pour ne jamais déborder de sa colonne.
+      // Miniature 52px + gap 10px : 7 vignettes = 424px, 5 = 300px, 3 = 176px.
+      function half() {
+        var w = carousel ? carousel.clientWidth : 440;
+        if (w >= 430) return 3; // 7 miniatures (active ± 3)
+        if (w >= 305) return 2; // 5 miniatures
+        return 1;               // 3 miniatures
+      }
+
+      function windowIndices() {
+        var count = Math.min(N, half() * 2 + 1);
+        if (N <= count) {
+          var all = [];
+          for (var k = 0; k < N; k++) all.push(k);
+          return all;
+        }
+        var arr = [], h = half();
+        for (var o = -h; o <= h; o++) arr.push(((current + o) % N + N) % N);
+        return arr;
+      }
+
+      function renderSlides() {
+        for (var i = 0; i < slides.length; i++) {
+          slides[i].classList.toggle('is-active', i === current);
+        }
+      }
+
+      function renderThumbs() {
+        thumbs.innerHTML = '';
+        windowIndices().forEach(function (idx) {
+          var t = document.createElement('button');
+          t.type = 'button';
+          t.className = 'carousel-thumb' + (idx === current ? ' is-active' : '');
+          t.setAttribute('aria-label', 'Voir la photo ' + (idx + 1));
+          var ti = document.createElement('img');
+          ti.src = CAROUSEL_IMAGES[idx].src; ti.alt = ''; ti.loading = 'lazy';
+          t.appendChild(ti);
+          t.addEventListener('click', function () { show(idx); });
+          thumbs.appendChild(t);
+        });
+      }
+
+      function show(i) {
+        current = ((i % N) + N) % N;
+        elapsed = 0;
+        bar.style.width = '0%';
+        renderSlides();
+        renderThumbs();
+      }
+
+      // Progression pilotée par rAF : vraie pause/reprise au survol
+      function frame(ts) {
+        if (lastTs === null) lastTs = ts;
+        var dt = ts - lastTs;
+        lastTs = ts;
+        if (!hovering && N > 1) {
+          elapsed += dt;
+          if (elapsed >= DURATION) { show(current + 1); }
+          else { bar.style.width = (elapsed / DURATION * 100) + '%'; }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      document.getElementById('carousel-next').addEventListener('click', function () { show(current + 1); });
+      document.getElementById('carousel-prev').addEventListener('click', function () { show(current - 1); });
+
+      // Pause au survol de TOUT le carrousel (image, flèches, barre, miniatures)
+      if (carousel) {
+        carousel.addEventListener('mouseenter', function () { hovering = true; });
+        carousel.addEventListener('mouseleave', function () { hovering = false; });
+      }
+
+      // Re-fenêtrer les miniatures au redimensionnement
+      var resizeT;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(renderThumbs, 150);
+      });
+
+      show(0);
+      requestAnimationFrame(frame);
+    })();
+
+    /* ===================== RÉCAPITULATIF DES RÉPONSES ===================== */
+    (function () {
+      var LABELS = {
+        'Nom-et-prenom':         'Nom et prénom',
+        'Adresse-Email':         'Email',
+        'Nombre-invites':        "Nombre d'invité(es)",
+        'Ages-enfants':          'Âge(s) des enfants',
+        'Infos-complementaires': 'Infos complémentaires',
+        'Presence':              'Présence confirmée à'
+      };
+
+      var data = null;
+      try { data = JSON.parse(sessionStorage.getItem('rsvpData') || 'null'); } catch (e) {}
+      if (!data) return;
+
+      if (data['Nom-et-prenom']) {
+        var prenom = String(data['Nom-et-prenom']).trim().split(' ')[0];
+        if (prenom) document.getElementById('merci-title').textContent = 'Merci, ' + prenom + ' !';
+      }
+
+      var list = document.getElementById('merci-recap-list');
+      var any = false;
+      Object.keys(LABELS).forEach(function (k) {
+        var v = data[k];
+        if (v === undefined || v === null || String(v).trim() === '') return;
+        any = true;
+        var row = document.createElement('div'); row.className = 'merci-row';
+        var dt = document.createElement('dt'); dt.textContent = LABELS[k];
+        var dd = document.createElement('dd'); dd.textContent = v;
+        row.appendChild(dt); row.appendChild(dd);
+        list.appendChild(row);
+      });
+      if (any) document.getElementById('merci-recap').hidden = false;
+    })();
+  </script>
 </body>
 
 </html>
