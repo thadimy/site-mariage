@@ -178,21 +178,25 @@ class StickyGridScroll {
         // Zoom the entire grid
         timeline.to(this.grid, { scale: 2.05 })
 
-        // Move lateral columns horizontally
-        timeline.to(columns[0], { xPercent: -40 }, "<") // Left column moves left
-        timeline.to(columns[2], { xPercent: 40 }, "<") // Right column moves right
+        // On small screens (≤ 990px), do NOT apply global column transformations
+        // Only apply individual transformations to Photo 2, 5, 9, 11 in animateGridOnScroll
+        if (window.innerWidth > 990) {
+            // Move lateral columns horizontally
+            timeline.to(columns[0], { xPercent: -40 }, "<") // Left column moves left
+            timeline.to(columns[2], { xPercent: 40 }, "<") // Right column moves right
 
-        // Animate central column vertically
-        timeline.to(
-            columns[1],
-            {
-                // Items above the midpoint move up, below move down
-                yPercent: (index) => (index < Math.floor(columns[1].length / 2) ? -1 : 1) * 40,
-                duration: 0.5,
-                ease: "power1.inOut",
-            },
-            "-=0.5", // Start slightly before previous animation ends for overlap
-        )
+            // Animate central column vertically
+            timeline.to(
+                columns[1],
+                {
+                    // Items above the midpoint move up, below move down
+                    yPercent: (index) => (index < Math.floor(columns[1].length / 2) ? -1 : 1) * 40,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                },
+                "-=0.5", // Start slightly before previous animation ends for overlap
+            )
+        }
 
         return timeline
     }
@@ -208,11 +212,14 @@ class StickyGridScroll {
             return
         }
 
+        // On small screens (≤ 990px), keep title always visible
+        const shouldAnimateTitle = window.innerWidth > 990
+
         // Create a timeline
         gsap.timeline({ defaults: { overwrite: true } })
-            // Animate the title's vertical position
+            // Animate the title's vertical position (only on large screens)
             .to(this.title, {
-                yPercent: isVisible ? 0 : this.titleOffsetY, // Slide up or return to initial offset
+                yPercent: shouldAnimateTitle ? (isVisible ? 0 : this.titleOffsetY) : 0,
                 duration: 0.7,
                 ease: "power2.inOut",
             })
@@ -257,43 +264,42 @@ class StickyGridScroll {
             // Overlap with previous animation by 0.32 seconds
             .add(() => this.toggleContent(timeline.scrollTrigger.direction === 1), "-=0.32")
 
-        // On small screens only (≤ 990px), apply specific translations to certain images
-        // to clear the centred text more effectively
+        // On small screens only (≤ 990px), apply specific translations ONLY to Photo 2, 5, 9, 11
         if (window.innerWidth <= 990) {
-            // young-3-bis.jpeg (column 0, index 1) → translate(0%, -90%)
-            if (this.columns[0] && this.columns[0][1]) {
-                timeline.to(this.columns[0][1], {
-                    yPercent: -90,
-                    duration: 0.5,
-                    ease: "power1.inOut",
-                })
-            }
-
-            // new-young-2.jpeg (column 1, index 0) → translate(0%, -100%)
+            // Photo 2 (new-young-2.jpeg, column 1, index 0) → translate(0%, -150%) - MONTE
             if (this.columns[1] && this.columns[1][0]) {
                 timeline.to(this.columns[1][0], {
-                    yPercent: -100,
+                    yPercent: -150,
                     duration: 0.5,
                     ease: "power1.inOut",
-                })
+                }, "<")
             }
 
-            // young-11.jpeg (column 1, index 2) → translate(0%, 100%)
+            // Photo 5 (young-3-bis.jpeg, column 1, index 1) → translate(0%, -150%) - MONTE
+            if (this.columns[1] && this.columns[1][1]) {
+                timeline.to(this.columns[1][1], {
+                    yPercent: -150,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                }, "<")
+            }
+
+            // Photo 9 (young-12.jpeg, column 2, index 2) → translate(0%, 150%) - DESCEND
             if (this.columns[1] && this.columns[1][2]) {
                 timeline.to(this.columns[1][2], {
-                    yPercent: 100,
+                    yPercent: 150,
                     duration: 0.5,
                     ease: "power1.inOut",
-                })
+                }, "<")
             }
 
-            // young-14.jpeg (column 1, index 3) → translate(0%, 100%)
+            // Photo 11 (young-14.jpeg, column 1, index 3) → translate(0%, 150%) - DESCEND
             if (this.columns[1] && this.columns[1][3]) {
                 timeline.to(this.columns[1][3], {
-                    yPercent: 100,
+                    yPercent: 150,
                     duration: 0.5,
                     ease: "power1.inOut",
-                })
+                }, "<")
             }
         }
     }
@@ -387,4 +393,16 @@ preloadImages().then(() => {
     initSmoothScrolling() // Initialize smooth scrolling
     new StickyGridScroll() // Initialize grid animation
     new IntroAnimations() // Initialize intro animations
+
+    // Initialize light sweep animation on button
+    const sweep = document.getElementById('sweep')
+    if (sweep) {
+        function triggerSweep() {
+            sweep.classList.remove('animate')
+            void sweep.offsetWidth
+            sweep.classList.add('animate')
+            setTimeout(triggerSweep, 2000 + Math.random() * 4000)
+        }
+        setTimeout(triggerSweep, 1000 + Math.random() * 2000)
+    }
 })
