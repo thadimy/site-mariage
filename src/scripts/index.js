@@ -378,7 +378,7 @@ class IntroAnimations {
 }
 
 // When restored from bfcache, GSAP inline styles are frozen and ScrollTrigger/Lenis
-// won't reinitialize — force a clean reload so animations start fresh.
+// won't reinitialize-force a clean reload so animations start fresh.
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) location.reload()
 })

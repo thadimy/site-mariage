@@ -1,4 +1,4 @@
-# Thalie & Dimitry — Faire-part de Mariage
+# Thalie & Dimitry-Faire-part de Mariage
 
 Site de faire-part digital pour le mariage de **Thalie ADONG** et **Dimitry MAKOBA**
 **Samedi 29 août 2026** · Lille (Mairie + Église le Phare) · Belvédère, Belgique
@@ -14,7 +14,7 @@ Site de faire-part digital pour le mariage de **Thalie ADONG** et **Dimitry MAKO
 5. [Système de design](#système-de-design)
 6. [Déploiement GitHub Pages](#déploiement-github-pages)
 7. [Formulaire RSVP (important)](#formulaire-rsvp-important)
-8. [Maintenance — contenu blog](#maintenance--contenu-blog)
+8. [Maintenance-contenu blog](#maintenance--contenu-blog)
 9. [Règles de développement](#règles-de-développement)
 10. [Contacts](#contacts)
 
@@ -26,8 +26,8 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 
 | Partie | URL | Rôle |
 |--------|-----|------|
-| **Landing animée** | `/` | Entrée immersive — vidéo plein écran avec verset biblique, grille de photos animée (GSAP), scroll fluide (Lenis), CTA vers le programme |
-| **Site programme** | `/programme/` | Site d'information complet — couple, histoire, cérémonie, compte à rebours dynamique, RSVP, blog |
+| **Landing animée** | `/` | Entrée immersive-vidéo plein écran avec verset biblique, grille de photos animée (GSAP), scroll fluide (Lenis), CTA vers le programme |
+| **Site programme** | `/programme/` | Site d'information complet-couple, histoire, cérémonie, compte à rebours dynamique, RSVP, blog |
 
 **Parcours visiteur :**
 ```
@@ -54,10 +54,10 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 ### Site programme (`/programme/`)
 | Outil | Rôle |
 |-------|------|
-| HTML statique | Export Webflow — aucun bundler |
+| HTML statique | Export Webflow-aucun bundler |
 | `css/webflow.css` | Reset + classes utilitaires Webflow |
 | `css/thalie-dimitry.webflow.css` | Design system du site (variables, composants) |
-| `js/webflow.js` | Interactions Webflow (sliders, navbar, animations) — **ne jamais modifier** |
+| `js/webflow.js` | Interactions Webflow (sliders, navbar, animations)-**ne jamais modifier** |
 | jQuery 3.5.1 (CDN) | Requis par webflow.js |
 | Compte à rebours | Script inline vanilla dans `programme/index.html` (jours + heures, accord singulier/pluriel) |
 
@@ -65,7 +65,7 @@ Le site est composé de deux expériences unifiées sous un seul projet Vite :
 | Outil | Rôle |
 |-------|------|
 | **GitHub Pages** | Hébergement statique du site (via GitHub Actions) |
-| [Formspree](https://formspree.io) *(à configurer)* | Réception des RSVP — voir [section dédiée](#formulaire-rsvp-important) |
+| [Formspree](https://formspree.io) *(à configurer)* | Réception des RSVP-voir [section dédiée](#formulaire-rsvp-important) |
 
 > ⚠️ GitHub Pages est un hébergement **100 % statique** : pas de backend, pas de Netlify Forms.
 > La réception des RSVP nécessite un service tiers (voir [Formulaire RSVP](#formulaire-rsvp-important)).
@@ -118,12 +118,12 @@ npm run preview    # Prévisualiser le build (http://localhost:4173/site-mariage
 ```
 site-mariage/
 │
-├── index.html              ← Entry point Vite — landing animée
+├── index.html              ← Entry point Vite-landing animée
 ├── vite.config.js          ← Config Vite (base, publicDir, copie statique de programme/)
 ├── package.json
 ├── README.md
 ├── CLAUDE.md               ← Instructions internes (non versionné)
-├── netlify.toml            ← Config Netlify (legacy — ignorée par GitHub Pages)
+├── netlify.toml            ← Config Netlify (legacy-ignorée par GitHub Pages)
 │
 ├── .github/
 │   └── workflows/
@@ -144,7 +144,7 @@ site-mariage/
 │   ├── young-*.jpeg        ← Photos grille animée
 │   ├── *.webp              ← Variantes WebP
 │   ├── favicon.png
-│   └── _redirects          ← Règles Netlify (legacy — ignorées par GitHub Pages)
+│   └── _redirects          ← Règles Netlify (legacy-ignorées par GitHub Pages)
 │
 └── programme/              ← Site Webflow (copié tel quel dans dist/ via viteStaticCopy)
     ├── index.html          ← Page principale (couple, infos, histoire, cérémonie, compte à rebours, RSVP)
@@ -233,8 +233,8 @@ de nommage différentes.
 ### Composants réutilisables (programme/)
 
 Avant de créer un nouveau composant HTML dans `programme/`, toujours vérifier dans :
-- `programme/admin-page/styleguide.html` — structures HTML des boutons, cartes, nav
-- `programme/css/thalie-dimitry.webflow.css` — classes disponibles
+- `programme/admin-page/styleguide.html`-structures HTML des boutons, cartes, nav
+- `programme/css/thalie-dimitry.webflow.css`-classes disponibles
 
 **Bouton principal :**
 ```html
@@ -369,7 +369,7 @@ Le plus simple est [**Formspree**](https://formspree.io) (offre gratuite suffisa
 
 ---
 
-## Maintenance — contenu blog
+## Maintenance-contenu blog
 
 Le blog contient **6 articles** dans `programme/blog/`, chacun relié à la page d'accueil
 (section *Infos*) et à la liste `programme/blog/index.html`.
@@ -399,9 +399,9 @@ Certains articles utilisent des images existantes du site en placeholder. Pour l
 ## Règles de développement
 
 ### Ce qu'on ne touche jamais
-- `programme/js/webflow.js` — code propriétaire minifié
-- `src/scripts/index.js` — logique GSAP/Lenis de la landing
-- `programme/admin-page/styleguide.html` — référence en lecture seule
+- `programme/js/webflow.js`-code propriétaire minifié
+- `src/scripts/index.js`-logique GSAP/Lenis de la landing
+- `programme/admin-page/styleguide.html`-référence en lecture seule
 
 ### Avant d'écrire du code dans programme/
 1. Lire `programme/admin-page/styleguide.html` → structures HTML des composants
@@ -417,7 +417,7 @@ Certains articles utilisent des images existantes du site en placeholder. Pour l
 - **Images programme dans blog/** : chemin `../images/[fichier]`
 - **Assets landing** : référencés en **relatif** (`favicon.png`, `programme/`, `./photo.jpg`)
   pour rester compatibles avec le `base` GitHub Pages
-- **Typo Webflow** : `blog-details-contant` (sans "e") — ne pas corriger, la classe CSS l'utilise
+- **Typo Webflow** : `blog-details-contant` (sans "e")-ne pas corriger, la classe CSS l'utilise
 - **Guillemets** : si VS Code convertit automatiquement les guillemets droits (`"`) en
   guillemets typographiques (`"`) dans le HTML, les attributs cassent. Désactiver toute
   extension « smart quotes » / l'option d'auto-formatage des guillemets.
@@ -435,7 +435,7 @@ Certains articles utilisent des images existantes du site en placeholder. Pour l
 | | |
 |--|--|
 | Email | thaliedimitry@gmail.com |
-| Téléphone | Audrey : +33 7 84 67 51 79 — Anouchka : +33 7 78 66 00 92 |
+| Téléphone | Audrey : +33 7 84 67 51 79-Anouchka : +33 7 78 66 00 92 |
 | Date du mariage | Samedi 29 août 2026 |
 | Date limite RSVP | 30 juillet 2026 |
 | Site en ligne | https://thadimy.github.io/site-mariage/ |

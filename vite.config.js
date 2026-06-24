@@ -27,7 +27,7 @@ const MIME = {
 export default defineConfig(({ command }) => ({
   root: '.',
   // Par défaut le site est servi à la RACINE ('/') : c'est ce qu'attendent
-  // Netlify, `npm run preview`, et le dev — donc prod === dev.
+  // Netlify, `npm run preview`, et le dev-donc prod === dev.
   // GitHub Pages en page projet (servie sous /<repo>/) ? Builder avec
   // VITE_BASE=/site-mariage/ (le workflow .github/workflows/deploy.yml le fait).
   base: command === 'build' ? (process.env.VITE_BASE || '/') : '/',
